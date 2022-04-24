@@ -41,9 +41,6 @@ public class User {
     @Column
     private String avatarUrl;
 
-    @Column(nullable = false)
-    private boolean emailStatus;
-
     @Column(columnDefinition = "varchar(255) default 'NoData'")
     @Enumerated(EnumType.STRING)
     private Gender gender;

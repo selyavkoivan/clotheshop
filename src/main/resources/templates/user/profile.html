@@ -16,11 +16,12 @@
 </head>
 <body>
 <div th:insert="blocks/header :: header"></div>
-<div th:object="${user}">
+<form th:object="${user}" action="" method="post">
+    <input type="hidden" th:field="*{userId}">
     <div class="row justify-content-center align-items-center">
-        <div class="col-8">
+        <div class="col-8 mb-3">
             <div class="row">
-                <div class="col-4 m-0 p-4 image">
+                <div class="col-4 m-0 image">
                     <span th:if="${user.avatarUrl != null}">
                         <img alt="" class="col-12 img img-responsive rounded-circle"
                              th:src="*{avatarUrl}">
@@ -29,9 +30,10 @@
                         <img alt="" class="col-12 img img-responsive rounded-circle"
                              src="https://avatarko.ru/img/kartinka/1/avatarko_anonim.jpg">
                     </span>
+                    <button id="editUser" class="btn btn-primary col-12 mt-3">Изменить</button>
                 </div>
-                <div class="col-8 m-0 p-4">
-                    <div class="form-control">
+                <div class="col-8 m-0 ps-3">
+                    <div class="form-control p-2">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="username-addon">@</span>
@@ -40,7 +42,13 @@
                                    aria-label="Имя пользователя"
                                    aria-describedby="username-addon" th:field="*{username}">
                         </div>
-
+                        <span th:if="${usernameExist != null}">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong th:text="${usernameExist}"></strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                            </div>
+                        </span>
                         <div class="input-group mt-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id=""><p class="m-0"><i style="height: 100%"
@@ -49,21 +57,116 @@
                             <input readonly type="text" class="form-control" placeholder="Почта" aria-label="Почта"
                                    aria-describedby="email-addon" th:field="*{email}"/>
                         </div>
+                        <span th:if="${emailExist != null}">
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <strong th:text="${emailExist}"></strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                            </div>
+                        </span>
+                        <div class="input-group mt-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="name-addon">@</span>
+                            </div>
+                            <input readonly type="text" class="form-control" placeholder="Страна" aria-label="Страна"
+                                   aria-describedby="surname-addon" th:field="*{name}">
 
-                        <form method="post" action="upload" enctype="multipart/form-data" class="mt-3">
+                            <div class="input-group-prepend ms-2">
+                                <span class="input-group-text" id="surname-addon">@</span>
+                            </div>
+                            <input readonly type="text" class="form-control" placeholder="Область" aria-label="Область"
+                                   aria-describedby="surname-addon" th:field="*{surname}">
+                        </div>
+                        <div class="input-group mt-3">
+                            <div class="input-group-prepend">
+                        <span class="input-group-text" id="birthday-addon"><p class="m-0"><i
+                                class="fa-solid fa-cake-candles"></i></p></span>
+                            </div>
+                            <input readonly type="text" class="form-control" placeholder="Страна" aria-label="Страна"
+                                   aria-describedby="birthday-addon" th:field="*{birthday}">
+
+                            <div class="input-group-prepend ms-2">
+                        <span class="input-group-text" id="gender-addon"><p class="m-0"><i
+                                class="fa-solid fa-transgender"></i></p></span>
+                            </div>
+                            <select disabled class="form-control"
+                                    aria-describedby="gender-addon" th:field="*{gender}">
+                                <option th:each="gender : ${T(by.bsuir.clotheshop.model.entities.user.gender.Gender).values()}"
+                                        th:value="${gender.name()}" th:text="${gender}"></option>
+                            </select>
+                        </div>
+                        <div class="mt-3">
                             <div class="text-center mt-3">
                                 <label for="file" id="drop-area" class="col-12 p-5 border border-5 rounded">
                                     <i class="fa fa-cloud-upload"></i> Выберите или перетащите фото ...
                                 </label>
-                                <input type="file" id="file" name="file" class="d-none" accept="image/*" onchange="form.submit()">
+                                <input type="file" id="file" name="file" class="d-none" accept="image/*">
                             </div>
-                        </form>
+                        </div>
 
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-8">
+            <div class="form-control">
+                <div class="ms-5 mb-3">
+                    <h1>Адрес</h1>
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                            <span class="input-group-text" id="country-addon"><p class="m-0"><i
+                                    class="fa-solid fa-earth-europe"></i></p></span>
+                    </div>
+                    <input readonly type="text" class="form-control" placeholder="Страна" aria-label="Страна"
+                           aria-describedby="country-addon" th:field="*{address.country}">
+
+                    <div class="input-group-prepend ms-2">
+                            <span class="input-group-text" id="region-addon"><p class="m-0"><i
+                                    class="fa-solid fa-map"></i></p></span>
+                    </div>
+                    <input readonly type="text" class="form-control" placeholder="Область" aria-label="Область"
+                           aria-describedby="region-addon" th:field="*{address.region}">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                            <span class="input-group-text" id="city-addon"><p class="m-0"><i
+                                    class="fa-solid fa-city"></i></p></span>
+                    </div>
+                    <input readonly type="text" class="form-control" placeholder="Город" aria-label="Город"
+                           aria-describedby="city-addon" th:field="*{address.city}">
+
+                    <div class="input-group-prepend ms-2">
+                            <span class="input-group-text" id="street-addon"><p class="m-0"><i
+                                    class="fa-solid fa-road"></i></p></span>
+                    </div>
+                    <input readonly type="text" class="form-control" placeholder="Улица" aria-label="Улица"
+                           aria-describedby="street-addon" th:field="*{address.street}">
+                </div>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                            <span class="input-group-text" id="home-addon"><p class="m-0"><i
+                                    class="fa-solid fa-house"></i></p></span>
+                    </div>
+                    <input readonly type="text" class="form-control" placeholder="Номер дома" aria-label="Номер дома"
+                           aria-describedby="home-addon" th:field="*{address.homeNumber}">
+
+                    <div class="input-group-prepend ms-2">
+                            <span class="input-group-text" id="apartment-addon"><p class="m-0"><i
+                                    class="fa-solid fa-door-closed"></i></p></span>
+                    </div>
+                    <input readonly type="number" min="0" max="32767" class="form-control" placeholder="Номер квартиры"
+                           aria-label="Номер квартиры"
+                           aria-describedby="apartment-addon" th:field="*{address.apartmentNumber}">
+                </div>
+
+            </div>
+            <div id="edit-buttons" class="input-group mt-3 d-none">
+                <input type="submit" class="form-control btn btn-success" value="Подтвердить">
+                <input id="cancel" type="button" class="form-control ms-2 btn btn-danger" value="Отменить">
+            </div>
+        </div>
     </div>
-</div>
+</form>
 </body>
 </html>

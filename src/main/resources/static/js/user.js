@@ -6,4 +6,27 @@ $(document).ready(() => {
             }
         ).children().children().toggleClass("fa-eye").toggleClass("fa-eye-slash")
     });
+
+    $('#editUser').click(function () {
+        $('input').attr("readonly", false)
+        $('select').attr("disabled", false)
+        $(this).hide()
+        $('#drop-area').hide()
+        $('#edit-buttons').removeClass('d-none').children().attr("readonly", false)
+
+        return false
+    })
+
+    $('#cancel').click(function () {
+        $('input').attr("readonly", true)
+        $('select').attr("disabled", true)
+        $('#editUser').show()
+        $('#drop-area').show()
+        $('#edit-buttons').addClass('d-none').children().attr("readonly", true)
+
+        return false
+    })
+    window.setTimeout(function () {
+        $(".alert").alert('close');
+    }, 2000);
 });

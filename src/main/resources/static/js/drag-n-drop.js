@@ -1,5 +1,6 @@
 $(document).ready(() => {
     let dropArea = document.getElementById('drop-area');
+    let input = document.getElementById('file');
 
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
         dropArea.addEventListener(eventName, preventDefaults, false)
@@ -11,7 +12,7 @@ $(document).ready(() => {
     }
 
     dropArea.addEventListener('drop', handleDrop, false)
-
+    input.addEventListener('change', () => handleFiles(input.files));
     function handleDrop(e) {
         let dt = e.dataTransfer
         let files = dt.files
@@ -21,6 +22,8 @@ $(document).ready(() => {
     function handleFiles(files) {
         ([...files]).forEach(uploadFile)
     }
+
+
 
     function uploadFile(file) {
         let url = 'upload'

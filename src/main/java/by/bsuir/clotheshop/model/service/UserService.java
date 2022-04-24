@@ -18,17 +18,16 @@ public class UserService implements CrudService<User, UserStatus> {
     UserRepository repository;
 
     @Override
-    public UserStatus create(User user)
-    {
+    public UserStatus create(User user) {
         try {
             repository.save(user);
         } catch (Exception e) {
             var usernameUser = repository.findUserByUsername(user.getUsername());
             var emailUser = repository.findUserByEmail(user.getEmail());
 
-            if(emailUser != null && usernameUser != null) return UserStatus.EMAIL_AND_USERNAME_IS_EXIST;
-            if(emailUser != null) return UserStatus.EMAIL_IS_EXIST;
-            if(usernameUser != null) return UserStatus.USERNAME_IS_EXIST;
+            if (emailUser != null && usernameUser != null) return UserStatus.EMAIL_AND_USERNAME_IS_EXIST;
+            if (emailUser != null) return UserStatus.EMAIL_IS_EXIST;
+            if (usernameUser != null) return UserStatus.USERNAME_IS_EXIST;
         }
         return UserStatus.NO_ERROR;
     }
@@ -48,12 +47,25 @@ public class UserService implements CrudService<User, UserStatus> {
         return null;
     }
 
-    public UserStatus saveUserData(User user)
-    {
+    public List<Object> saveUserData(User user) {
         var noChangeUser = repository.findById(user.getUserId()).get();
+
+        var usernameUser = repository.findUserByUsername(user.getUsername());
+        var emailUser = repository.findUserByEmail(user.getEmail());
+
+        if (emailUser != null && !user.getEmail().equals(noChangeUser.getEmail()) && usernameUser != null
+                && !user.getUsername().equals(noChangeUser.getUsername()))
+            return Arrays.asList(UserStatus.EMAIL_AND_USERNAME_IS_EXIST, noChangeUser);
+        if (emailUser != null && !user.getEmail().equals(noChangeUser.getEmail()))
+            return Arrays.asList(UserStatus.EMAIL_IS_EXIST, noChangeUser);
+        if (usernameUser != null && !user.getUsername().equals(noChangeUser.getUsername()))
+            return Arrays.asList(UserStatus.USERNAME_IS_EXIST, noChangeUser);
+
+
         user.setPassword(noChangeUser.getPassword());
+        user.setAvatarUrl(noChangeUser.getAvatarUrl());
         repository.save(user);
-        return UserStatus.NO_ERROR;
+        return Arrays.asList(UserStatus.NO_ERROR, user);
     }
 
     public User findByUsername(String username) {
@@ -62,9 +74,10 @@ public class UserService implements CrudService<User, UserStatus> {
 
     public List<Object> login(UserLogin userLogin) {
         var user = repository.findUserByEmail(userLogin.getUsernameOrEmail());
-        if(user == null) user = repository.findUserByUsername(userLogin.getUsernameOrEmail());
-        if(user == null) return Arrays.asList(UserStatus.USER_NOT_FOUND, null);
-        if(!user.getPassword().equals(userLogin.getPassword())) return Arrays.asList(UserStatus.INCORRECT_PASSWORD, null);
+        if (user == null) user = repository.findUserByUsername(userLogin.getUsernameOrEmail());
+        if (user == null) return Arrays.asList(UserStatus.USER_NOT_FOUND, null);
+        if (!user.getPassword().equals(userLogin.getPassword()))
+            return Arrays.asList(UserStatus.INCORRECT_PASSWORD, null);
         return Arrays.asList(UserStatus.USER_NOT_FOUND, user);
     }
 

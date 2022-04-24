@@ -80,12 +80,19 @@ public class UserController {
         return "user/profile";
     }
 
-    @RequestMapping(value = "/save-data", method = RequestMethod.POST)
+    @RequestMapping(value = "/{username}/", method = RequestMethod.POST)
     public String saveUserData(@ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
-        service.saveUserData(user);
+        var answer = service.saveUserData(user);
+        if (answer.get(0) == UserStatus.EMAIL_AND_USERNAME_IS_EXIST) {
+            model.addAttribute("emailExist", "Электронная почта " + user.getEmail() + " уже используется");
+            model.addAttribute("usernameExist", "Имя пользователя " + user.getUsername() + " уже используется");
+        } else if (answer.get(0) == UserStatus.EMAIL_IS_EXIST)
+            model.addAttribute("emailExist", "Электронная почта " + user.getEmail() + " уже используется");
+        else if (answer.get(0) == UserStatus.USERNAME_IS_EXIST)
+            model.addAttribute("usernameExist", "Имя пользователя " + user.getUsername() + " уже используется");
 
-        model.addAttribute("user", user);
-        return "user/" + user.getUsername() + "/";
+        model.addAttribute("user", answer.get(1));
+        return "/user/profile";
 
     }
 

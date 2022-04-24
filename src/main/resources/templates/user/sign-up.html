@@ -31,12 +31,12 @@
                            aria-describedby="username-addon" th:field="*{username}">
                 </div>
                 <span th:if="${usernameExist != null}">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <div class="mt-3 alert alert-danger alert-dismissible fade show" role="alert">
                         <strong th:text="${usernameExist}"></strong>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </span>
-                <div class="input-group mb-3">
+                <div class="mt-3 input-group mb-3">
                     <div class="input-group-prepend">
                         <span class="input-group-text" id=""><p class="m-0"><i style="height: 100%"
                                                                                class="fa-solid fa-envelope"></i></p></span>
@@ -45,7 +45,7 @@
                            aria-describedby="email-addon" th:field="*{email}"/>
                 </div>
                 <span th:if="${emailExist != null}">
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <div class="mt-3 alert alert-danger alert-dismissible fade show" role="alert">
                         <strong th:text="${emailExist}"></strong>
                         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
