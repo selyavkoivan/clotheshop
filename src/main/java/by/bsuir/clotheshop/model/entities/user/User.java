@@ -38,6 +38,9 @@ public class User {
     @ManyToOne(cascade=CascadeType.ALL)
     private Address address;
 
+    @Column
+    private String avatarUrl;
+
     @Column(nullable = false)
     private boolean emailStatus;
 
