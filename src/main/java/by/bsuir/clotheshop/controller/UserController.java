@@ -2,26 +2,30 @@ package by.bsuir.clotheshop.controller;
 
 import by.bsuir.clotheshop.model.entities.user.UserForm;
 import by.bsuir.clotheshop.model.entities.user.UserLogin;
+import by.bsuir.clotheshop.model.entities.user.gender.Gender;
+import by.bsuir.clotheshop.model.entities.user.role.Role;
 import by.bsuir.clotheshop.model.service.cloudinary.PhotoUploader;
 import by.bsuir.clotheshop.model.status.UserStatus;
 import by.bsuir.clotheshop.model.entities.user.User;
 import by.bsuir.clotheshop.model.service.UserService;
-import org.apache.tomcat.util.codec.binary.Base64;
+
 import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.persistence.Convert;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
+import java.util.HashSet;
+
 
 @Controller
 @RequestMapping(value = "/user")
@@ -30,10 +34,21 @@ public class UserController {
     @Autowired
     UserService service;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @RequestMapping(value = "/sign-up", method = RequestMethod.GET)
     public String SignUp(Model model) {
+
         model.addAttribute("userForm", new UserForm());
         return "user/sign-up";
+    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public String Login(@ModelAttribute("userForm") UserForm userForm, Model model) {
+        var user = service.findByUsername(userForm.getUsername());
+        if(user.getGender() == null)  return "redirect:user/" + userForm.getUsername() + "/edit";
+        return "redirect:user/" + userForm.getUsername() + "/";
     }
 
     @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
@@ -43,7 +58,7 @@ public class UserController {
             model.addAttribute("passwordError", "Повторите пароль верно");
             return "user/sign-up";
         }
-
+        userForm.setPassword(passwordEncoder.encode(userForm.getPassword()));
         var user = new User(userForm);
         var addStatus = service.create(user);
         if (addStatus == UserStatus.NO_ERROR) {
@@ -76,8 +91,29 @@ public class UserController {
         if (user == null) {
             //usernotfoundpage
         }
+
         model.addAttribute("user", user);
         return "user/profile";
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public String saveUserAfterSignUp(@ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
+
+        user.setGender(Gender.NoData);
+        service.saveUserData(user);
+        return "redirect:/user/" + user.getUsername() + "/";
+    }
+
+    @GetMapping("/login-error")
+    public String loginError(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession(false);
+        String errorMessage = null;
+        if (session != null) {
+            errorMessage = "Неверный логин или пароль";
+        }
+
+        model.addAttribute("Error", errorMessage);
+        return "/user/sign-in";
     }
 
     @RequestMapping(value = "/{username}/", method = RequestMethod.POST)
@@ -106,9 +142,9 @@ public class UserController {
     public String SignIn(@ModelAttribute("user") UserLogin userLogin, BindingResult bindingResult, Model model) {
 
         var userStatusAndUser = service.login(userLogin);
-        if(userStatusAndUser.get(1) != null)
-        {
+        if (userStatusAndUser.get(1) != null) {
             var user = (User) userStatusAndUser.get(1);
+
             model.addAttribute("user", user);
             return "redirect:" + user.getUsername() + "/edit";
         }
@@ -120,7 +156,7 @@ public class UserController {
     }
 
     @PostMapping("/{username}/upload")
-    public String uploadFile(@RequestParam("file") MultipartFile file,@PathVariable String username, RedirectAttributes attributes) throws IOException {
+    public String uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String username, RedirectAttributes attributes) throws IOException {
 
         var url = PhotoUploader.uploadImage(file);
         var user = service.findByUsername(username);

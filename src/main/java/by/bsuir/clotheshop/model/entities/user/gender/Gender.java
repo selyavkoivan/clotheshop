@@ -1,12 +1,12 @@
 package by.bsuir.clotheshop.model.entities.user.gender;
 
 public enum Gender {
-    Male("Мужчина"),
-    Female("Женщина"),
-    TransMale("Трансгендерный мужчина"),
-    TransFemale("Трансгендерная женщина"),
-    Queer("Квир"),
-    NoData("Нет данных");
+    NoData("Нет данных"),
+    Male("Мужской"),
+    Female("Женский"),
+    TransMale("Трансгендерный мужской"),
+    TransFemale("Трансгендерная женский"),
+    Queer("Квир");
 
     private final String gender;
 
