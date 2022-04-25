@@ -1,0 +1,10 @@
+HELP.md
+/target/
+/db/
+.idea
+*.iws
+*.iml
+*.ipr
+.mvn
+src/main/resources/application.properties
+src/main/java/by/bsuir/clotheshop/model/service/cloudinary/data/
