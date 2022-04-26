@@ -17,11 +17,15 @@
 <body>
 <div class="row m-0 justify-content-center align-items-center">
     <div class="col-8">
-        <div class="ms-5 mb-3">
-            <h1>Администраторы</h1>
+        <div class="ms-5 mb-3 d-flex justify-content-between">
+            <h1 class="me-5">Администраторы</h1>
+            <form method="post" action="/users/search" class="ms-5 input-group mb-3"    >
+                <input type="text" name="searchValue" th:value="${searchValue}" class="form-control" placeholder="Введите имя пользователя или почту">
+                <button id="search" class="btn btn-success" type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+            </form>
         </div>
         <div class="row">
-            <div class="col-6 m-0 p-3" th:each="admin : ${admins}">
+            <div  class="col-6 m-0 p-3" th:each="admin : ${admins}">
                 <div class="form-control">
                     <div class="row">
                         <div class="col-4 m-0">
@@ -57,13 +61,16 @@
                     </div>
                 </div>
             </div>
+            <div class="text-center" th:if="${admins.size() == 0}">
+                <h2><small class="text-muted">Администраторы не найдены</small></h2>
+            </div>
         </div>
         <div class="ms-5 mb-3">
             <h1>Пользователи</h1>
         </div>
         <div class="row">
-            <div class="col-6 m-0 p-3" th:each="user : ${users}">
-                <div class="form-control">
+            <div class="col-6 m-0 p-3" th:each="user:  ${users}">
+                <div th:attr="class=${user.locked ? 'border border-danger rounded p-2' : 'form-control'}">
                     <div class="row">
                         <div class="col-4 m-0">
                             <a th:href="@{'/user/' + ${user.username} + '/'}">
@@ -96,9 +103,11 @@
                     </div>
                 </div>
             </div>
+            <div class="text-center" th:if="${users.size() == 0}">
+                <h2><small class="text-muted">Пользователи не найдены</small></h2>
+            </div>
         </div>
     </div>
 </div>
 </body>
-
 </html>

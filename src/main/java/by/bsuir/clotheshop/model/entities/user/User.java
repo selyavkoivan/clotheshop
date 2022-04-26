@@ -62,6 +62,9 @@ public class User implements UserDetails {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date birthday;
 
+    @Column
+    private boolean locked;
+
     public User(UserForm userForm){
         username = userForm.getUsername();
         email = userForm.getEmail();
@@ -81,7 +84,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return !locked;
     }
 
     @Override

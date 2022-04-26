@@ -26,6 +26,35 @@ $(document).ready(() => {
 
         return false
     })
+
+    $('#block').click(function () {
+        return setLockStatus(true)
+    })
+
+    $('#unblock').click(function () {
+        return setLockStatus(false)
+    })
+
+
+
+    function setLockStatus(status)
+    {
+        let url = 'lock'
+        let formData = new FormData()
+        formData.append('status', status)
+        fetch(url, {
+            method: 'POST',
+            body: formData
+        })
+            .then(() => {
+                location.reload()
+            })
+            .catch(() => {
+                location.reload()
+            })
+        return false
+    }
+
     window.setTimeout(function () {
         $(".alert").alert('close');
     }, 2000);

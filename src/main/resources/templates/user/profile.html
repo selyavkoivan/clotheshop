@@ -53,7 +53,7 @@
                                 <span class="input-group-text" id=""><p class="m-0"><i style="height: 100%"
                                                                                        class="fa-solid fa-envelope"></i></p></span>
                             </div>
-                            <input readonly type="text" class="form-control" placeholder="Почта" aria-label="Почта"
+                            <input readonly type="email" class="form-control" placeholder="Почта" aria-label="Почта"
                                    aria-describedby="email-addon" th:field="*{email}"/>
                         </div>
                         <span th:if="${emailExist != null}">
@@ -106,7 +106,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -168,7 +167,21 @@
                 <input type="submit" class="form-control btn btn-success" value="Подтвердить">
                 <input id="cancel" type="button" class="form-control ms-2 btn btn-danger" value="Отменить">
             </div>
+            <div th:if="${(!#strings.listJoin(user.getRoles(),',').contains('Admin') && #strings.listJoin(#authentication.getAuthorities(),',').contains('Admin'))}">
+            <div class="mt-3 row justify-content-center align-items-center">
+                <div class="col-4" th:if="${!user.locked}">
+                    <button id="block" class="form-control ms-2 btn btn-danger">
+                        <i class="fa-solid fa-lock"></i> Заблокировать
+                    </button>
+                </div>
+                <div class="col-4" th:if="${user.locked}">
+                    <button id="unblock" class="form-control ms-2 btn btn-success">
+                        <i class="fa-solid fa-lock-open"></i> Разблокировать
+                    </button>
+                </div>
+            </div>
         </div>
+    </div>
     </div>
 </form>
 </body>

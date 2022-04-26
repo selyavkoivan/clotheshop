@@ -101,4 +101,8 @@ public class UserService implements CrudService<User, UserStatus>, UserDetailsSe
     public List<User> findAll() {
         return (List<User>)repository.findAll();
     }
+
+    public List<User> findAllByUsername(String username) {
+        return ((List<User>)repository.findAll()).stream().filter(u-> u.getUsername().contains(username) || u.getEmail().contains(username)).toList();
+    }
 }

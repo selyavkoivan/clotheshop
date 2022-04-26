@@ -110,7 +110,13 @@ public class UserController {
         HttpSession session = request.getSession(false);
         String errorMessage = null;
         if (session != null) {
-            errorMessage = "Неверный логин или пароль";
+            AuthenticationException ex = (AuthenticationException) session.getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
+            if (ex != null) {
+                if (ex.getMessage().contains("locked"))
+                    errorMessage = "Учетная запись пользователя заблокирована";
+                else
+                    errorMessage = "Неверный логин или пароль";
+            }
         }
 
         model.addAttribute("Error", errorMessage);
@@ -164,6 +170,15 @@ public class UserController {
         if(username.equals(user.getUsername())) user.setAvatarUrl(editAvatarUser.getAvatarUrl());
         service.saveUserData(editAvatarUser);
 
+        return "redirect:/user/" + username + "/";
+    }
+
+    @PostMapping("/{username}/lock")
+    public String setLockStatus(@RequestParam("status") boolean status, @PathVariable String username) {
+
+        var user = service.findByUsername(username);
+        user.setLocked(status);
+        service.saveUserData(user);
 
         return "redirect:/user/" + username + "/";
     }

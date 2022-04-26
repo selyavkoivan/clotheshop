@@ -42,7 +42,7 @@
                         <span class="input-group-text" id=""><p class="m-0"><i style="height: 100%"
                                                                                class="fa-solid fa-envelope"></i></p></span>
                     </div>
-                    <input required type="text" class="form-control" placeholder="Почта" aria-label="Почта"
+                    <input required type="email" class="form-control" placeholder="Почта" aria-label="Почта"
                            aria-describedby="email-addon" th:field="*{email}"/>
                 </div>
                 <span th:if="${emailExist != null}">
