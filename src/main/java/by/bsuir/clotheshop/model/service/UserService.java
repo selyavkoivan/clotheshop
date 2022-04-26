@@ -14,6 +14,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
@@ -72,6 +73,7 @@ public class UserService implements CrudService<User, UserStatus>, UserDetailsSe
 
         user.setPassword(noChangeUser.getPassword());
         user.setAvatarUrl(noChangeUser.getAvatarUrl());
+        user.setRoles(noChangeUser.getRoles());
         repository.save(user);
         return Arrays.asList(UserStatus.NO_ERROR, user);
     }

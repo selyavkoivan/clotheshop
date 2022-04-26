@@ -12,14 +12,15 @@ import by.bsuir.clotheshop.model.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
+
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -37,22 +38,22 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @RequestMapping(value = "/sign-up", method = RequestMethod.GET)
+    @GetMapping( "/sign-up")
     public String SignUp(Model model) {
 
         model.addAttribute("userForm", new UserForm());
         return "user/sign-up";
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String Login(@ModelAttribute("userForm") UserForm userForm, Model model) {
+    @PostMapping( "/login")
+    public String Login(@ModelAttribute("userForm") UserForm userForm) {
         var user = service.findByUsername(userForm.getUsername());
         if(user.getGender() == null)  return "redirect:user/" + userForm.getUsername() + "/edit";
         return "redirect:user/" + userForm.getUsername() + "/";
     }
 
-    @RequestMapping(value = "/sign-up", method = RequestMethod.POST)
-    public String SignUp(@ModelAttribute("userForm") UserForm userForm, BindingResult bindingResult, Model model) {
+    @PostMapping( "/sign-up")
+    public String SignUp(@ModelAttribute("userForm") UserForm userForm, Model model) {
         model.addAttribute("userForm", userForm);
         if (!userForm.getPassword().equals(userForm.getRepeatPassword())) {
             model.addAttribute("passwordError", "Повторите пароль верно");
@@ -75,7 +76,7 @@ public class UserController {
         return "user/sign-up";
     }
 
-    @RequestMapping(value = "/{username}/edit", method = RequestMethod.GET)
+    @GetMapping("/{username}/edit")
     public String SaveData(@PathVariable String username, Model model) {
         var user = service.findByUsername(username);
         if (user == null) {
@@ -85,7 +86,7 @@ public class UserController {
         return "user/input-user-data";
     }
 
-    @RequestMapping(value = "/{username}/", method = RequestMethod.GET)
+    @GetMapping( "/{username}/")
     public String ShowUser(@PathVariable String username, Model model) {
         var user = service.findByUsername(username);
         if (user == null) {
@@ -96,8 +97,8 @@ public class UserController {
         return "user/profile";
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public String saveUserAfterSignUp(@ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
+    @PostMapping( "/save")
+    public String saveUserAfterSignUp(@ModelAttribute("user") User user) {
 
         user.setGender(Gender.NoData);
         service.saveUserData(user);
@@ -116,30 +117,29 @@ public class UserController {
         return "/user/sign-in";
     }
 
-    @RequestMapping(value = "/{username}/", method = RequestMethod.POST)
-    public String saveUserData(@ModelAttribute("user") User user, BindingResult bindingResult, Model model) {
-        var answer = service.saveUserData(user);
+    @PostMapping( "/{username}/")
+    public String saveUserData(@ModelAttribute("user") User editUser, @PathVariable String username, Model model, @AuthenticationPrincipal User user) {
+        var answer = service.saveUserData(editUser);
         if (answer.get(0) == UserStatus.EMAIL_AND_USERNAME_IS_EXIST) {
-            model.addAttribute("emailExist", "Электронная почта " + user.getEmail() + " уже используется");
-            model.addAttribute("usernameExist", "Имя пользователя " + user.getUsername() + " уже используется");
+            model.addAttribute("emailExist", "Электронная почта " + editUser.getEmail() + " уже используется");
+            model.addAttribute("usernameExist", "Имя пользователя " + editUser.getUsername() + " уже используется");
         } else if (answer.get(0) == UserStatus.EMAIL_IS_EXIST)
-            model.addAttribute("emailExist", "Электронная почта " + user.getEmail() + " уже используется");
+            model.addAttribute("emailExist", "Электронная почта " + editUser.getEmail() + " уже используется");
         else if (answer.get(0) == UserStatus.USERNAME_IS_EXIST)
-            model.addAttribute("usernameExist", "Имя пользователя " + user.getUsername() + " уже используется");
-
-        model.addAttribute("user", answer.get(1));
-        return "/user/profile";
+            model.addAttribute("usernameExist", "Имя пользователя " + editUser.getUsername() + " уже используется");
+        if(username == user.getUsername()) user.setUsername(editUser.getUsername());
+        return "redirect:/user/" + ((User) answer.get(1)).getUsername() + "/";
 
     }
 
-    @RequestMapping(value = "/sign-in", method = RequestMethod.GET)
+    @GetMapping( "/sign-in")
     public String SignIn(Model model) {
         model.addAttribute("user", new UserLogin());
         return "user/sign-in";
     }
 
-    @RequestMapping(value = "/sign-in", method = RequestMethod.POST)
-    public String SignIn(@ModelAttribute("user") UserLogin userLogin, BindingResult bindingResult, Model model) {
+    @PostMapping("/sign-in")
+    public String SignIn(@ModelAttribute("user") UserLogin userLogin, Model model) {
 
         var userStatusAndUser = service.login(userLogin);
         if (userStatusAndUser.get(1) != null) {
@@ -156,12 +156,14 @@ public class UserController {
     }
 
     @PostMapping("/{username}/upload")
-    public String uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String username, RedirectAttributes attributes) throws IOException {
+    public String uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String username, @AuthenticationPrincipal User user) throws IOException {
 
         var url = PhotoUploader.uploadImage(file);
-        var user = service.findByUsername(username);
-        user.setAvatarUrl(url);
-        service.saveUserData(user);
+        var editAvatarUser = service.findByUsername(username);
+        editAvatarUser.setAvatarUrl(url);
+        if(username.equals(user.getUsername())) user.setAvatarUrl(editAvatarUser.getAvatarUrl());
+        service.saveUserData(editAvatarUser);
+
 
         return "redirect:/user/" + username + "/";
     }

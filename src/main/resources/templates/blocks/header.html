@@ -14,12 +14,12 @@
                     </a>
                 </div>
                 <div class="me-5 d-flex">
-                    <div sec:authorize="isAuthenticated()" th:object="${user}">
+                    <div sec:authorize="isAuthenticated()">
                         <a class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                            <img th:src="${user.avatarUrl}" alt="avatar" width="40" height="40" class="rounded-circle">
+                            <img th:src="${#authentication.principal.avatarUrl}" alt="avatar" width="40" height="40" class="rounded-circle">
                         </a>
                         <ul class="dropdown-menu text-small" aria-labelledby="dropdown">
-                            <li><a class="dropdown-item" th:href="@{'/user/' + ${username} + '/'}">Мой профиль</a></li>
+                            <li><a class="dropdown-item" th:href="@{'/user/' + ${#authentication.principal.username} + '/'}">Мой профиль</a></li>
                             <li sec:authorize="hasAuthority('Admin')"><a class="dropdown-item" href="/users">Пользователи</a></li>
                             <li sec:authorize="hasAuthority('User')"><a class="dropdown-item" href="/my-orders">Мои заказы</a></li>
                             <li sec:authorize="hasAuthority('Admin')"><a class="dropdown-item" href="/orders">Заказы</a></li>

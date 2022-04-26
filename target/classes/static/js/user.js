@@ -8,7 +8,7 @@ $(document).ready(() => {
     });
 
     $('#editUser').click(function () {
-        $('input').attr("readonly", false)
+        $("input[id!='username'], #username[value!='admin']").attr("readonly", false)
         $('select').attr("disabled", false)
         $(this).hide()
         $('#drop-area').hide()

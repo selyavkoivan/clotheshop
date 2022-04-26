@@ -6,5 +6,6 @@ HELP.md
 *.iml
 *.ipr
 .mvn
+.gitignore
 src/main/resources/application.properties
 src/main/java/by/bsuir/clotheshop/model/service/cloudinary/data/

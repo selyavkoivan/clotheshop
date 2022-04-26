@@ -24,8 +24,10 @@
 
                     <img alt="" class="col-12 img img-responsive rounded-circle"
                          th:src="*{avatarUrl}">
+                    <div th:if="${username == #authentication.principal.username || (!#strings.listJoin(user.getRoles(),',').contains('Admin') && #strings.listJoin(#authentication.getAuthorities(),',').contains('Admin'))}" class="m-0 p-0">
 
                     <button id="editUser" class="btn btn-primary col-12 mt-3">Изменить</button>
+                    </div>
                 </div>
                 <div class="col-8 m-0 ps-3">
                     <div class="form-control p-2">
@@ -33,7 +35,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="username-addon">@</span>
                             </div>
-                            <input readonly type="text" class="form-control" placeholder="Имя пользователя"
+                            <input id="username" readonly type="text" class="form-control" placeholder="Имя пользователя"
                                    aria-label="Имя пользователя"
                                    aria-describedby="username-addon" th:field="*{username}">
                         </div>
