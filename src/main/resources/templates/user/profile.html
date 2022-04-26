@@ -17,16 +17,17 @@
 <body>
 <form th:object="${user}" action="" method="post">
     <input type="hidden" th:field="*{userId}">
-    <div class="row justify-content-center align-items-center">
+    <div class="row m-0 justify-content-center align-items-center">
         <div class="col-8 mb-3">
             <div class="row">
                 <div class="col-4 m-0 image">
 
                     <img alt="" class="col-12 img img-responsive rounded-circle"
                          th:src="*{avatarUrl}">
-                    <div th:if="${username == #authentication.principal.username || (!#strings.listJoin(user.getRoles(),',').contains('Admin') && #strings.listJoin(#authentication.getAuthorities(),',').contains('Admin'))}" class="m-0 p-0">
+                    <div th:if="${username == #authentication.principal.username || (!#strings.listJoin(user.getRoles(),',').contains('Admin') && #strings.listJoin(#authentication.getAuthorities(),',').contains('Admin'))}"
+                         class="m-0 p-0">
 
-                    <button id="editUser" class="btn btn-primary col-12 mt-3">Изменить</button>
+                        <button id="editUser" class="btn btn-primary col-12 mt-3">Изменить</button>
                     </div>
                 </div>
                 <div class="col-8 m-0 ps-3">
@@ -35,7 +36,8 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="username-addon">@</span>
                             </div>
-                            <input id="username" readonly type="text" class="form-control" placeholder="Имя пользователя"
+                            <input id="username" readonly type="text" class="form-control"
+                                   placeholder="Имя пользователя"
                                    aria-label="Имя пользователя"
                                    aria-describedby="username-addon" th:field="*{username}">
                         </div>
@@ -93,12 +95,15 @@
                                         th:value="${gender.name()}" th:text="${gender}"></option>
                             </select>
                         </div>
-                        <div class="mt-3">
-                            <div class="text-center mt-3">
-                                <label for="file" id="drop-area" class="col-12 p-5 border border-5 rounded">
-                                    <i class="fa fa-cloud-upload"></i> Выберите или перетащите фото ...
-                                </label>
-                                <input type="file" id="file" name="file" class="d-none" accept="image/*">
+                        <div th:if="${username == #authentication.principal.username || (!#strings.listJoin(user.getRoles(),',').contains('Admin') && #strings.listJoin(#authentication.getAuthorities(),',').contains('Admin'))}"
+                             class="m-0 p-0">
+                            <div class="mt-3">
+                                <div class="text-center mt-3">
+                                    <label for="file" id="drop-area" class="col-12 p-5 border border-5 rounded">
+                                        <i class="fa fa-cloud-upload"></i> Выберите или перетащите фото ...
+                                    </label>
+                                    <input type="file" id="file" name="file" class="d-none" accept="image/*">
+                                </div>
                             </div>
                         </div>
 

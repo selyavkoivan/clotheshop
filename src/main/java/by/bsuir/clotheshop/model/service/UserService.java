@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService implements CrudService<User, UserStatus>, UserDetailsService {
@@ -95,5 +96,9 @@ public class UserService implements CrudService<User, UserStatus>, UserDetailsSe
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return repository.findByUsername(username);
+    }
+
+    public List<User> findAll() {
+        return (List<User>)repository.findAll();
     }
 }
