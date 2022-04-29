@@ -2,7 +2,7 @@ package by.bsuir.clotheshop.model.service;
 
 
 import by.bsuir.clotheshop.model.entities.user.User;
-import by.bsuir.clotheshop.model.entities.user.UserLogin;
+
 import by.bsuir.clotheshop.model.entities.user.role.Role;
 import by.bsuir.clotheshop.model.status.UserStatus;
 import by.bsuir.clotheshop.model.repository.UserRepository;
@@ -75,6 +75,7 @@ public class UserService implements CrudService<User, UserStatus>, UserDetailsSe
         user.setPassword(noChangeUser.getPassword());
         user.setAvatarUrl(noChangeUser.getAvatarUrl());
         user.setRoles(noChangeUser.getRoles());
+        user.setLocked(noChangeUser.isLocked());
         repository.save(user);
         return Arrays.asList(UserStatus.NO_ERROR, user);
     }
@@ -82,16 +83,6 @@ public class UserService implements CrudService<User, UserStatus>, UserDetailsSe
     public User findByUsername(String username) {
         return repository.findByUsername(username);
     }
-
-    public List<Object> login(UserLogin userLogin) {
-        var user = repository.findByEmail(userLogin.getUsernameOrEmail());
-        if (user == null) user = repository.findByUsername(userLogin.getUsernameOrEmail());
-        if (user == null) return Arrays.asList(UserStatus.USER_NOT_FOUND, null);
-        if (!user.getPassword().equals(userLogin.getPassword()))
-            return Arrays.asList(UserStatus.INCORRECT_PASSWORD, null);
-        return Arrays.asList(UserStatus.USER_NOT_FOUND, user);
-    }
-
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {

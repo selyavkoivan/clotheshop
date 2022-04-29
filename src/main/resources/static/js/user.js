@@ -13,7 +13,7 @@ $(document).ready(() => {
         $(this).hide()
         $('#drop-area').hide()
         $('#edit-buttons').removeClass('d-none').children().attr("readonly", false)
-
+        $('#lock-block').hide()
         return false
     })
 
@@ -23,7 +23,7 @@ $(document).ready(() => {
         $('#editUser').show()
         $('#drop-area').show()
         $('#edit-buttons').addClass('d-none').children().attr("readonly", true)
-
+        $('#lock-block').show()
         return false
     })
 

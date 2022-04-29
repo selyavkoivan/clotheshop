@@ -1,4 +1,4 @@
-package by.bsuir.clotheshop.model.entities.user;
+package by.bsuir.clotheshop.model.entities.dto;
 
 
 import lombok.AllArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserForm {
+public class UserDto {
 
     private String username;
     private String email;

@@ -4,7 +4,7 @@ import by.bsuir.clotheshop.model.entities.user.User;
 
 public interface CrudService<T, S> {
     S create(T t);
-    Iterable<User> read();
+    Iterable<T> read();
     S update(T t);
     S delete(T t);
 }

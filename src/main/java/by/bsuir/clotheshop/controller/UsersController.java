@@ -1,7 +1,6 @@
 package by.bsuir.clotheshop.controller;
 
 import by.bsuir.clotheshop.model.entities.user.User;
-import by.bsuir.clotheshop.model.entities.user.UserForm;
 import by.bsuir.clotheshop.model.entities.user.role.Role;
 import by.bsuir.clotheshop.model.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Controller

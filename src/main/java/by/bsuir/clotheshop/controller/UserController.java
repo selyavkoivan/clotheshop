@@ -1,9 +1,7 @@
 package by.bsuir.clotheshop.controller;
 
-import by.bsuir.clotheshop.model.entities.user.UserForm;
-import by.bsuir.clotheshop.model.entities.user.UserLogin;
+import by.bsuir.clotheshop.model.entities.dto.UserDto;
 import by.bsuir.clotheshop.model.entities.user.gender.Gender;
-import by.bsuir.clotheshop.model.entities.user.role.Role;
 import by.bsuir.clotheshop.model.service.cloudinary.PhotoUploader;
 import by.bsuir.clotheshop.model.status.UserStatus;
 import by.bsuir.clotheshop.model.entities.user.User;
@@ -25,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.util.HashSet;
 
 
 @Controller
@@ -41,19 +38,19 @@ public class UserController {
     @GetMapping( "/sign-up")
     public String SignUp(Model model) {
 
-        model.addAttribute("userForm", new UserForm());
+        model.addAttribute("userForm", new UserDto());
         return "user/sign-up";
     }
 
     @PostMapping( "/login")
-    public String Login(@ModelAttribute("userForm") UserForm userForm) {
+    public String Login(@ModelAttribute("userForm") UserDto userForm) {
         var user = service.findByUsername(userForm.getUsername());
         if(user.getGender() == null)  return "redirect:user/" + userForm.getUsername() + "/edit";
         return "redirect:user/" + userForm.getUsername() + "/";
     }
 
     @PostMapping( "/sign-up")
-    public String SignUp(@ModelAttribute("userForm") UserForm userForm, Model model) {
+    public String SignUp(@ModelAttribute("userForm") UserDto userForm, Model model) {
         model.addAttribute("userForm", userForm);
         if (!userForm.getPassword().equals(userForm.getRepeatPassword())) {
             model.addAttribute("passwordError", "Повторите пароль верно");
@@ -140,24 +137,7 @@ public class UserController {
 
     @GetMapping( "/sign-in")
     public String SignIn(Model model) {
-        model.addAttribute("user", new UserLogin());
-        return "user/sign-in";
-    }
-
-    @PostMapping("/sign-in")
-    public String SignIn(@ModelAttribute("user") UserLogin userLogin, Model model) {
-
-        var userStatusAndUser = service.login(userLogin);
-        if (userStatusAndUser.get(1) != null) {
-            var user = (User) userStatusAndUser.get(1);
-
-            model.addAttribute("user", user);
-            return "redirect:" + user.getUsername() + "/edit";
-        }
-        if (userStatusAndUser.get(0) == UserStatus.USER_NOT_FOUND)
-            model.addAttribute("userNotFound", "Пользователь не найден");
-        else if (userStatusAndUser.get(0) == UserStatus.INCORRECT_PASSWORD)
-            model.addAttribute("incorrectPassword", "Неверно введен пароль");
+        model.addAttribute("user", new UserDto());
         return "user/sign-in";
     }
 

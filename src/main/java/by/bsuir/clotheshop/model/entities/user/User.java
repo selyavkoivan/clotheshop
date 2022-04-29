@@ -2,6 +2,7 @@ package by.bsuir.clotheshop.model.entities.user;
 
 
 import by.bsuir.clotheshop.model.entities.address.Address;
+import by.bsuir.clotheshop.model.entities.dto.UserDto;
 import by.bsuir.clotheshop.model.entities.user.role.Role;
 import by.bsuir.clotheshop.model.tables.TableName;
 import by.bsuir.clotheshop.model.entities.user.gender.Gender;
@@ -15,8 +16,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.*;
-
-import static org.springframework.test.context.transaction.TestTransaction.isActive;
 
 @Entity
 @Table(name = TableName.USER)
@@ -65,7 +64,7 @@ public class User implements UserDetails {
     @Column
     private boolean locked;
 
-    public User(UserForm userForm){
+    public User(UserDto userForm){
         username = userForm.getUsername();
         email = userForm.getEmail();
         password = userForm.getPassword();
