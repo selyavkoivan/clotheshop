@@ -144,7 +144,7 @@ public class UserController {
     @PostMapping("/{username}/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file, @PathVariable String username, @AuthenticationPrincipal User user) throws IOException {
 
-        var url = PhotoUploader.uploadImage(file);
+        var url = PhotoUploader.uploadSquareImage(file);
         var editAvatarUser = service.findByUsername(username);
         editAvatarUser.setAvatarUrl(url);
         if(username.equals(user.getUsername())) user.setAvatarUrl(editAvatarUser.getAvatarUrl());

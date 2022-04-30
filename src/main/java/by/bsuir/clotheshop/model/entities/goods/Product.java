@@ -38,11 +38,19 @@ public class Product {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private List<String> photoUrls;
 
+    @Column
+    private String mainPhoto;
+
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private List<Size> sizes;
 
     public void addSize(Size size)
     {
        sizes.add(size);
+    }
+
+    public void addPhotoUrl(String url)
+    {
+        photoUrls.add(url);
     }
 }

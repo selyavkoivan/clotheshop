@@ -15,7 +15,7 @@ import java.nio.file.Files;
 import java.util.Map;
 
 public class PhotoUploader {
-    public static String uploadImage(MultipartFile image) throws IOException {
+    public static String uploadSquareImage(MultipartFile image) throws IOException {
         Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
                 "cloud_name", CloudData.CLOUD_NAME,
                 "api_key", CloudData.API_KEY,
@@ -23,6 +23,19 @@ public class PhotoUploader {
                 "secure", true));
 
         Map uploadResult = cloudinary.uploader().upload(convertMultiPartToFile(image), ObjectUtils.emptyMap());
+        if (uploadResult.isEmpty())
+            return "";
+        return uploadResult.get("url").toString();
+    }
+
+    public static String uploadImage(MultipartFile image) throws IOException {
+        Cloudinary cloudinary = new Cloudinary(ObjectUtils.asMap(
+                "cloud_name", CloudData.CLOUD_NAME,
+                "api_key", CloudData.API_KEY,
+                "api_secret", CloudData.API_SECRET,
+                "secure", true));
+
+        Map uploadResult = cloudinary.uploader().upload(image.getBytes(), ObjectUtils.emptyMap());
         if (uploadResult.isEmpty())
             return "";
         return uploadResult.get("url").toString();

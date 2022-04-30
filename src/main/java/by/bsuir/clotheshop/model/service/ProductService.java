@@ -39,6 +39,7 @@ public class ProductService implements CrudService<Product, Product> {
     public Product update(Product product) {
         var oldProduct = repository.findById(product.getProductId()).get();
         product.setPhotoUrls(oldProduct.getPhotoUrls());
+        product.setMainPhoto(oldProduct.getMainPhoto());
         return repository.save(product);
     }
 
