@@ -39,10 +39,10 @@
                 <div class="col-8 m-0 ps-3">
                     <div class="form-control p-2">
                         <div class="ms-5">
-                            <h1 th:text="${product.name}">11</h1>
+                            <h1 th:text="${product.name}"></h1>
                         </div>
                         <div class="ms-5">
-                            <h2><small class="text-muted" th:text="${product.type}">11</small></h2>
+                            <h2><small class="text-muted" th:text="${product.type}"></small></h2>
                         </div>
                         <hr/>
                         <div class="ms-5">
@@ -77,7 +77,8 @@
                             <input type="hidden" id="sizeId" th:field="${productDto.size.sizeId}">
                             <h2 class="mt-2"><small th:text="${product.price}"></small><small
                                     class="text-muted">BYN</small></h2>
-                            <button id="addToCart" class="btn btn-outline-success col-12 mt-2">В корзину</button>
+                            <button th:if="${#strings.listJoin(#authentication.getAuthorities(),',').contains('User')}"
+                                    id="addToCart" class="btn btn-outline-success col-12 mt-2">В корзину</button>
                         </div>
                     </div>
                 </div>
@@ -96,7 +97,7 @@
                         <div class="row">
                             <div class="col-4">
                                 <h3>Материал</h3>
-                                <p th:text="${product.material.color}"></p>
+                                <p th:text="${product.material.material}"></p>
                             </div>
                             <div class="col-4">
                                 <h3>Цвет</h3>
@@ -104,7 +105,7 @@
                             </div>
                             <div class="col-4">
                                 <h3>Узор</h3>
-                                <p th:text="${product.material.color}"></p>
+                                <p th:text="${product.material.pattern}"></p>
                             </div>
                         </div>
                         <h3>Описание</h3>

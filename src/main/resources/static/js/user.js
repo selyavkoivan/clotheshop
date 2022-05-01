@@ -35,8 +35,6 @@ $(document).ready(() => {
         return setLockStatus(false)
     })
 
-
-
     function setLockStatus(status)
     {
         let url = 'lock'
@@ -54,6 +52,20 @@ $(document).ready(() => {
             })
         return false
     }
+
+    $('#addAdminRole').click(function () {
+        let url = 'setAdminRole'
+        fetch(url, {
+            method: 'POST'
+        })
+            .then(() => {
+                location.reload()
+            })
+            .catch(() => {
+                location.reload()
+            })
+        return false
+    })
 
     window.setTimeout(function () {
         $(".alert").alert('close');

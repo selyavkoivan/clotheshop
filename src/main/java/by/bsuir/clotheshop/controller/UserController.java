@@ -2,6 +2,7 @@ package by.bsuir.clotheshop.controller;
 
 import by.bsuir.clotheshop.model.entities.dto.UserDto;
 import by.bsuir.clotheshop.model.entities.user.gender.Gender;
+import by.bsuir.clotheshop.model.entities.user.role.Role;
 import by.bsuir.clotheshop.model.service.cloudinary.PhotoUploader;
 import by.bsuir.clotheshop.model.status.UserStatus;
 import by.bsuir.clotheshop.model.entities.user.User;
@@ -9,6 +10,7 @@ import by.bsuir.clotheshop.model.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -154,10 +156,22 @@ public class UserController {
     }
 
     @PostMapping("/{username}/lock")
+    @PreAuthorize("hasAnyAuthority('Admin')")
     public String setLockStatus(@RequestParam("status") boolean status, @PathVariable String username) {
 
         var user = service.findByUsername(username);
         user.setLocked(status);
+        service.saveUserData(user);
+
+        return "redirect:/user/" + username + "/";
+    }
+
+    @PostMapping("/{username}/setAdminRole")
+    @PreAuthorize("hasAnyAuthority('Admin')")
+    public String setLockStatus(@PathVariable String username) {
+
+        var user = service.findByUsername(username);
+        user.getRoles().add(Role.Admin);
         service.saveUserData(user);
 
         return "redirect:/user/" + username + "/";
