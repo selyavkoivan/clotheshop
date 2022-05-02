@@ -5,6 +5,7 @@ import by.bsuir.clotheshop.model.entities.user.role.Role;
 import by.bsuir.clotheshop.model.tables.TableName;
 import lombok.*;
 import org.hibernate.annotations.Cascade;
+import org.springframework.stereotype.Indexed;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @Entity
 @Table(name = TableName.PRODUCT)
+@Indexed
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,5 +54,9 @@ public class Product {
     public void addPhotoUrl(String url)
     {
         photoUrls.add(url);
+    }
+
+    public int calculateTotal() {
+        return sizes.stream().map(Size::getCount).reduce(0, Integer::sum);
     }
 }

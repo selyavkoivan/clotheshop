@@ -2,7 +2,7 @@
 <html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{blocks/header}">
 <head>
     <meta charset="UTF-8">
-    <title>Товар</title>
+    <title>Товар из корзины</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" th:href="@{/css/styles.css}">
@@ -15,34 +15,29 @@
 
 </head>
 <body>
-<form th:object="${productDto}" action="addToCart" method="post">
+<form th:object="${productInCart}" method="get" action="createOrder">
 
-    <input type="hidden" th:field="${product.productId}">
+    <input type="hidden" th:field="${productInCart.productInCartId}">
     <div class="row m-0 justify-content-center align-items-center">
         <div class="col-8 mb-3">
             <div class="row">
                 <div class="col-4 m-0 image">
-                    <img th:if="${product.photoUrls.size() == 0 && product.mainPhoto == null}"
+                    <img th:if="${productInCart.product.photoUrls.size() == 0 && productInCart.product.mainPhoto == null}"
                          height="300" class="form-control img img-responsive"
                          src="https://www.lionstroy.ru/published/publicdata/U70619SHOP/attachments/SC/products_pictures/nophoto.png">
-                    <img height="300" th:if="${product.photoUrls.size() != 0 && product.mainPhoto == null}"
+                    <img height="300" th:if="${productInCart.product.photoUrls.size() != 0 && productInCart.product.mainPhoto == null}"
                          class="form-control img img-responsive"
-                         th:src="${product.photoUrls[0]}">
-                    <img height="300" th:if="${product.mainPhoto != null}" class="form-control img img-responsive"
-                         th:src="${product.mainPhoto}">
-                    <div th:if="${#strings.listJoin(#authentication.getAuthorities(),',').contains('Admin')}"
-                         class="m-0 p-0">
-                        <a id="editUser" class="btn btn-primary col-12 mt-3"
-                              th:href="@{'/goods/' + ${product.productId} + '/edit'}">Изменить</a>
-                    </div>
+                         th:src="${productInCart.product.photoUrls[0]}">
+                    <img height="300" th:if="${productInCart.product.mainPhoto != null}" class="form-control img img-responsive"
+                         th:src="${productInCart.product.mainPhoto}">
                 </div>
                 <div class="col-8 m-0 ps-3">
                     <div class="form-control p-2">
                         <div class="ms-5">
-                            <h1 th:text="${product.name}"></h1>
+                            <h1 th:text="${productInCart.product.name}"></h1>
                         </div>
                         <div class="ms-5">
-                            <h2><small class="text-muted" th:text="${product.type}"></small></h2>
+                            <h2><small class="text-muted" th:text="${productInCart.product.type}"></small></h2>
                         </div>
                         <hr/>
                         <div class="ms-5">
@@ -50,35 +45,41 @@
                         </div>
                         <div class="input-group mb-3">
 
-                            <div th:each="size, iter : ${product.sizes}" class="input-group-prepend p-1">
-                                <span class="input-group-text size-field size-addon" th:name="${size.count}"
-                                      th:id="${size.sizeId}">
-                                    <p class="m-0" th:text="${size.size}"></p></span>
+                            <div class="input-group-prepend p-1">
+                                <span class="input-group-text size-field"
+                                      th:id="${productInCart.size.sizeId}">
+                                    <p class="m-0" th:text="${productInCart.size.size}"></p></span>
                             </div>
 
                         </div>
 
                         <div class="ms-1 col-sm-4 col-sm-offset-4">
-                            <div id="inputCountBlock" class="input-group d-none">
+                            <div id="inputCountBlock" class="input-group">
                                 <div class="input-group-prepend">
                                     <button class="btn btn-outline-dark btn-sm" id="minus-btn"><i
                                             class="fa fa-minus"></i></button>
                                 </div>
-                                <input type="number" id="qty_input" th:field="*{size.count}"
+                                <input type="number" id="qty_input" th:field="*{count}"
                                        class="form-control form-control-sm appearance-none"
-                                       min="1">
+                                       min="1" th:max="${productInCart.size.count}">
                                 <div class="input-group-prepend">
                                     <button class="btn btn-outline-dark btn-sm" id="plus-btn"><i class="fa fa-plus"></i>
                                     </button>
                                 </div>
                             </div>
-                            <h6 class="d-none" id="count"><small class="text-muted">Количество на складе
-                                : </small><small></small></h6>
-                            <input type="hidden" id="sizeId" th:field="${productDto.size.sizeId}">
-                            <h2 class="mt-2"><small th:text="${product.price}"></small><small
+                            <h6 id="count"><small class="text-muted">Количество на складе
+                                : </small><small th:text="${productInCart.size.count}"></small></h6>
+                            <input type="hidden" id="sizeId" th:field="${productInCart.size.sizeId}">
+                            <div class="mb-3 d-flex">
+                                <label style="word-wrap:break-word">
+                                    <input th:field="*{delivery}" type="checkbox"> Доставка
+                                </label>
+                            </div>
+
+                            <h2 class="mt-2"><small th:text="${productInCart.product.price}"></small><small
                                     class="text-muted">BYN</small></h2>
-                            <button th:if="${#strings.listJoin(#authentication.getAuthorities(),',').contains('User')}"
-                                    id="addToCart" class="btn btn-outline-success col-12 mt-2">В корзину</button>
+                            <button id="addToCart" class="btn btn-outline-primary col-12 mt-2">Заказать</button>
+                            <button id="deleteFromCart" th:name="${productInCart.productInCartId}" class="btn btn-outline-danger col-12 mt-2">Отменить</button>
                         </div>
                     </div>
                 </div>
@@ -97,42 +98,29 @@
                         <div class="row">
                             <div class="col-4">
                                 <h3>Материал</h3>
-                                <p th:text="${product.material.material}"></p>
+                                <p th:text="${productInCart.product.material.material}"></p>
                             </div>
                             <div class="col-4">
                                 <h3>Цвет</h3>
-                                <p th:text="${product.material.color}"></p>
+                                <p th:text="${productInCart.product.material.color}"></p>
                             </div>
                             <div class="col-4">
                                 <h3>Узор</h3>
-                                <p th:text="${product.material.pattern}"></p>
+                                <p th:text="${productInCart.product.material.pattern}"></p>
                             </div>
                         </div>
                         <h3>Описание</h3>
-                        <p th:text="${product.description}"></p>
+                        <p th:text="${productInCart.product.description}"></p>
                     </div>
                     <div id="gallery" class="container tab-pane fade"><br>
 
                         <div class="d-flex flex-wrap">
-                            <div class="m-2 image" th:each="url : ${product.photoUrls}">
+                            <div class="m-2 image" th:each="url : ${productInCart.product.photoUrls}">
                                 <img height="200" width="200" th:src="${url}">
                             </div>
                             <div id="myModal" class="modal">
                                 <span id="close" class="close">&times;</span>
                                 <img class="modal-content" id="img01">
-                                <span th:if="${#strings.listJoin(#authentication.getAuthorities(),',').contains('Admin')}"
-                                      id="setMainPhoto" class="close"><p class="text-center">Назначить основным фото</p><span>
-                            </div>
-                        </div>
-                        <div th:if="${#strings.listJoin(#authentication.getAuthorities(),',').contains('Admin')}"
-                             class="m-0 p-0">
-                            <div class="mt-3">
-                                <div class="text-center mt-3">
-                                    <label for="file" id="drop-area" class="col-12 p-5 border border-5 rounded">
-                                        <i class="fa fa-cloud-upload"></i> Выберите или перетащите фото ...
-                                    </label>
-                                    <input type="file" id="file" name="file" class="d-none" accept="image/*">
-                                </div>
                             </div>
                         </div>
                     </div>

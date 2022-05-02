@@ -2,7 +2,7 @@
 <html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{blocks/header}">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Профиль</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="/css/styles.css">
@@ -53,7 +53,8 @@
                                 <span class="input-group-text" id=""><p class="m-0"><i style="height: 100%"
                                                                                        class="fa-solid fa-envelope"></i></p></span>
                             </div>
-                            <input readonly required type="email" class="form-control" placeholder="Почта" aria-label="Почта"
+                            <input readonly required type="email" class="form-control" placeholder="Почта"
+                                   aria-label="Почта"
                                    aria-describedby="email-addon" th:field="*{email}"/>
                         </div>
                         <span th:if="${emailExist != null}">
@@ -111,80 +112,117 @@
             </div>
         </div>
         <div class="col-8">
-            <div class="form-control">
-                <div class="ms-5 mb-3">
-                    <h1>Адрес</h1>
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a class="nav-link active" data-bs-toggle="tab" href="#info">Адрес</a>
+                </li>
+                <li class="nav-item" th:if="${username == #authentication.principal.username}">
+                    <a class="nav-link" data-bs-toggle="tab" href="#cart">Корзина</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div id="info" class="form-control container tab-pane active">
+                    <div class="ms-5 mb-3">
+                        <h1>Адрес</h1>
+                    </div>
+                    <input type="hidden" th:field="*{address.addressId}">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
                             <span class="input-group-text" id="country-addon"><p class="m-0"><i
                                     class="fa-solid fa-earth-europe"></i></p></span>
-                    </div>
-                    <input readonly type="text" class="form-control" placeholder="Страна" aria-label="Страна"
-                           aria-describedby="country-addon" th:field="*{address.country}">
+                        </div>
+                        <input readonly type="text" class="form-control" placeholder="Страна" aria-label="Страна"
+                               aria-describedby="country-addon" th:field="*{address.country}">
 
-                    <div class="input-group-prepend ms-2">
+                        <div class="input-group-prepend ms-2">
                             <span class="input-group-text" id="region-addon"><p class="m-0"><i
                                     class="fa-solid fa-map"></i></p></span>
+                        </div>
+                        <input readonly type="text" class="form-control" placeholder="Область" aria-label="Область"
+                               aria-describedby="region-addon" th:field="*{address.region}">
                     </div>
-                    <input readonly type="text" class="form-control" placeholder="Область" aria-label="Область"
-                           aria-describedby="region-addon" th:field="*{address.region}">
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
                             <span class="input-group-text" id="city-addon"><p class="m-0"><i
                                     class="fa-solid fa-city"></i></p></span>
-                    </div>
-                    <input readonly type="text" class="form-control" placeholder="Город" aria-label="Город"
-                           aria-describedby="city-addon" th:field="*{address.city}">
+                        </div>
+                        <input readonly type="text" class="form-control" placeholder="Город" aria-label="Город"
+                               aria-describedby="city-addon" th:field="*{address.city}">
 
-                    <div class="input-group-prepend ms-2">
+                        <div class="input-group-prepend ms-2">
                             <span class="input-group-text" id="street-addon"><p class="m-0"><i
                                     class="fa-solid fa-road"></i></p></span>
+                        </div>
+                        <input readonly type="text" class="form-control" placeholder="Улица" aria-label="Улица"
+                               aria-describedby="street-addon" th:field="*{address.street}">
                     </div>
-                    <input readonly type="text" class="form-control" placeholder="Улица" aria-label="Улица"
-                           aria-describedby="street-addon" th:field="*{address.street}">
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
                             <span class="input-group-text" id="home-addon"><p class="m-0"><i
                                     class="fa-solid fa-house"></i></p></span>
-                    </div>
-                    <input readonly type="text" class="form-control" placeholder="Номер дома" aria-label="Номер дома"
-                           aria-describedby="home-addon" th:field="*{address.homeNumber}">
+                        </div>
+                        <input readonly type="text" class="form-control" placeholder="Номер дома"
+                               aria-label="Номер дома"
+                               aria-describedby="home-addon" th:field="*{address.homeNumber}">
 
-                    <div class="input-group-prepend ms-2">
+                        <div class="input-group-prepend ms-2">
                             <span class="input-group-text" id="apartment-addon"><p class="m-0"><i
                                     class="fa-solid fa-door-closed"></i></p></span>
+                        </div>
+                        <input readonly type="number" min="0" max="32767" class="form-control"
+                               placeholder="Номер квартиры"
+                               aria-label="Номер квартиры"
+                               aria-describedby="apartment-addon" th:field="*{address.apartmentNumber}">
                     </div>
-                    <input readonly type="number" min="0" max="32767" class="form-control" placeholder="Номер квартиры"
-                           aria-label="Номер квартиры"
-                           aria-describedby="apartment-addon" th:field="*{address.apartmentNumber}">
-                </div>
 
+                </div>
+                <div th:if="${username == #authentication.principal.username}" id="cart" class="container tab-pane fade">
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-12 m-0 p-3 product" th:each="product : ${cart}">
+                            <a class="p-0 link-dark text-decoration-none" th:href="@{'/cart/' + ${product.productInCartId} + '/edit'}">
+                                <img th:if="${product.product.photoUrls.size() == 0 && product.product.mainPhoto == null}"
+                                     class="col-12 rounded"
+                                     src="https://www.lionstroy.ru/published/publicdata/U70619SHOP/attachments/SC/products_pictures/nophoto.png">
+                                <img th:if="${product.product.photoUrls.size() != 0 && product.product.mainPhoto == null}"
+                                     class="col-12 rounded"
+                                     th:src="${product.product.photoUrls[0]}">
+                                <img th:if="${product.product.mainPhoto != null}" class="col-12 rounded"
+                                     th:src="${product.product.mainPhoto}">
+                                <p class="text-wrap m-0" th:text="${product.product.name}"></p>
+                                <h5><small>Размер :</small><small class="text-muted" th:text="${product.size.size}"></small></h5>
+                                <h5><small>Количество :</small><small class="text-muted" th:text="${product.count}"></small></h5>
+
+                                <!-- rate -->
+                                <h3><small class="text-muted" th:text="${product.getTotalPrice()}"></small><small> BYN</small></h3>
+                                <input type="hidden" id="totalCount" th:value="${product.product.calculateTotal()}">
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
             <div id="edit-buttons" class="input-group mt-3 d-none">
                 <input type="submit" class="form-control btn btn-success" value="Подтвердить">
                 <input id="cancel" type="button" class="form-control ms-2 btn btn-danger" value="Отменить">
             </div>
-            <div id="lock-block" th:if="${(!#strings.listJoin(user.getRoles(),',').contains('Admin') && #strings.listJoin(#authentication.getAuthorities(),',').contains('Admin'))}">
-            <div class="mt-3 row justify-content-center align-items-center">
-                <div class="col-4" th:if="${!user.locked}">
-                    <button id="block" class="form-control ms-2 btn btn-danger">
-                        <i class="fa-solid fa-lock"></i> Заблокировать
-                    </button>
-                    <button id="addAdminRole" class="form-control ms-2 btn btn-success">
-                        <i class="fa-solid fa-user-chef"></i> Назначить администратором
-                    </button>
-                </div>
-                <div class="col-4" th:if="${user.locked}">
-                    <button id="unblock" class="form-control ms-2 btn btn-success">
-                        <i class="fa-solid fa-lock-open"></i> Разблокировать
-                    </button>
+            <div id="lock-block"
+                 th:if="${(!#strings.listJoin(user.getRoles(),',').contains('Admin') && #strings.listJoin(#authentication.getAuthorities(),',').contains('Admin'))}">
+                <div class="mt-3 row justify-content-center align-items-center">
+                    <div class="col-3" th:if="${!user.locked}">
+                        <button id="block" class="form-control ms-2 btn btn-danger">
+                            <i class="fa-solid fa-lock"></i> Заблокировать
+                        </button>
+                        <button id="addAdminRole" class="form-control ms-2 btn btn-success">
+                            <i class="fa-solid fa-user-chef"></i> Назначить администратором
+                        </button>
+                    </div>
+                    <div class="col-4" th:if="${user.locked}">
+                        <button id="unblock" class="form-control ms-2 btn btn-success">
+                            <i class="fa-solid fa-lock-open"></i> Разблокировать
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     </div>
 </form>
 </body>

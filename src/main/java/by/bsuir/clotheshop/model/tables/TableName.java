@@ -6,4 +6,5 @@ public class TableName {
     public static final String PRODUCT = "product";
     public static final String MATERIAL = "material";
     public static final String SIZE = "size";
+    public static final String ORDER = "productOrder";
 }

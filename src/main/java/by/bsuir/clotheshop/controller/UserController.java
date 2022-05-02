@@ -3,6 +3,7 @@ package by.bsuir.clotheshop.controller;
 import by.bsuir.clotheshop.model.entities.dto.UserDto;
 import by.bsuir.clotheshop.model.entities.user.gender.Gender;
 import by.bsuir.clotheshop.model.entities.user.role.Role;
+import by.bsuir.clotheshop.model.service.OrderService;
 import by.bsuir.clotheshop.model.service.cloudinary.PhotoUploader;
 import by.bsuir.clotheshop.model.status.UserStatus;
 import by.bsuir.clotheshop.model.entities.user.User;
@@ -36,6 +37,9 @@ public class UserController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    OrderService orderService;
 
     @GetMapping( "/sign-up")
     public String SignUp(Model model) {
@@ -88,11 +92,8 @@ public class UserController {
     @GetMapping( "/{username}/")
     public String ShowUser(@PathVariable String username, Model model) {
         var user = service.findByUsername(username);
-        if (user == null) {
-            //usernotfoundpage
-        }
-
         model.addAttribute("user", user);
+        model.addAttribute("cart", orderService.findCartByUsername(username));
         return "user/profile";
     }
 
@@ -168,7 +169,7 @@ public class UserController {
 
     @PostMapping("/{username}/setAdminRole")
     @PreAuthorize("hasAnyAuthority('Admin')")
-    public String setLockStatus(@PathVariable String username) {
+    public String setAdminStatus(@PathVariable String username) {
 
         var user = service.findByUsername(username);
         user.getRoles().add(Role.Admin);

@@ -50,6 +50,7 @@ public class User implements UserDetails {
     @Cascade(org.hibernate.annotations.CascadeType.ALL)
     private Set<Role> roles;
 
+
     @Column(nullable = false,
             columnDefinition = "varchar(255) default 'https://avatarko.ru/img/kartinka/1/avatarko_anonim.jpg'")
     private String avatarUrl;
@@ -63,6 +64,9 @@ public class User implements UserDetails {
 
     @Column
     private boolean locked;
+
+    @ManyToOne(cascade=CascadeType.ALL)
+    private Card card;
 
     public User(UserDto userForm){
         username = userForm.getUsername();
