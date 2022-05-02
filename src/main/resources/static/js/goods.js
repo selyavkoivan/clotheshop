@@ -3,7 +3,7 @@ $(document).ready(() => {
     $('#add-size').click(function () {
         let count = $('.add-size-block').length
         $('.add-size-block').last().after($('.add-size-block').last().clone(true))
-            $('.add-size-block').last().children('input[type="hidden"]').remove()
+        $('.add-size-block').last().children('input[type="hidden"]').remove()
         $('.add-size-block').last().children('input').first().val("")
         $('.add-size-block').last().children('input').first().attr("name", "sizes[" + count + "].size")
         $('.add-size-block').last().children('input').last().val("")
@@ -104,15 +104,15 @@ $(document).ready(() => {
         if ($this.data('sort') !== 'asc') {
             sortDir = 'asc';
         }
-        let isDesc =  (sortDir === 'desc' ? 1 : -1)
+        let isDesc = (sortDir === 'desc' ? 1 : -1)
         $this.data('sort', sortDir).find('.fa').attr('class', 'fa fa-sort-' + sortDir);
 
-        $('.product').sort(function(a, b) {
+        $('.product').sort(function (a, b) {
             let an = a.querySelector('small').innerText, bn = b.querySelector('small').innerText
-            if(an > bn) {
+            if (an > bn) {
                 return 1 * isDesc;
             }
-            if(an < bn) {
+            if (an < bn) {
                 return -1 * isDesc;
             }
             return 0;
@@ -127,22 +127,45 @@ $(document).ready(() => {
         if ($this.data('sort') !== 'asc') {
             sortDir = 'asc';
         }
-        let isDesc =  (sortDir === 'desc' ? 1 : -1)
+        let isDesc = (sortDir === 'desc' ? 1 : -1)
         $this.data('sort', sortDir).find('.fa').attr('class', 'fa fa-sort-' + sortDir);
 
-        $('.product').sort(function(a, b) {
+        $('.product').sort(function (a, b) {
             let an = a.querySelector('#totalCount').value, bn = b.querySelector('#totalCount').value
-            if(an > bn) {
+            if (an > bn) {
                 return 1 * isDesc;
             }
-            if(an < bn) {
+            if (an < bn) {
                 return -1 * isDesc;
             }
             return 0;
         }).appendTo($('.product').parent());
     })
 
-    $('#deleteFromCart').click(function (){
+    $('#sort-status').on('click', '[data-sort]', function (event) {
+        event.preventDefault();
+
+        let $this = $(this),
+            sortDir = 'desc';
+        if ($this.data('sort') !== 'asc') {
+            sortDir = 'asc';
+        }
+        let isDesc = (sortDir === 'desc' ? 1 : -1)
+        $this.data('sort', sortDir).find('.fa').attr('class', 'fa fa-sort-' + sortDir);
+
+        $('.product').sort(function (a, b) {
+            let an = a.querySelector('#status').value, bn = b.querySelector('#status').value
+            if (an > bn) {
+                return 1 * isDesc;
+            }
+            if (an < bn) {
+                return -1 * isDesc;
+            }
+            return 0;
+        }).appendTo($('.product').parent());
+    })
+
+    $('#deleteFromCart').click(function () {
         let url = '/cart/delete'
         let formData = new FormData()
         formData.append('id', $(this).attr("name"))
@@ -151,10 +174,22 @@ $(document).ready(() => {
             body: formData
         }).then(() => {
             location.replace("/")
-            }).catch(() => {
+        }).catch(() => {
             location.reload()
-            })
+        })
 
+        return false
+    })
+
+    $('#closeOrder').click(function () {
+        let url = 'finish'
+        fetch(url, {
+            method: 'POST'
+        }).then(() => {
+            location.reload()
+        }).catch(() => {
+            location.reload()
+        })
         return false
     })
 })

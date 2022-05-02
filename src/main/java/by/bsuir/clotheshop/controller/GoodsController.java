@@ -110,7 +110,7 @@ public class GoodsController {
     @PreAuthorize("hasAnyAuthority('User')")
     public String showEditPage(Model model, @PathVariable int id,  @AuthenticationPrincipal User user) {
         var productInCart = orderService.findProductById(id);
-        if(user.getUserId() != productInCart.getUser().getUserId()) return "redirect:/";
+        if(user.getUserId() != productInCart.getUser().getUserId() || productInCart.getStatus() != 0) return "redirect:/";
         model.addAttribute("productInCart", productInCart);
         return "goods/productInCart";
     }
@@ -148,6 +148,8 @@ public class GoodsController {
     @PreAuthorize("hasAnyAuthority('User')")
     public String createOrder(@ModelAttribute("productInCart") Order productInCart, @PathVariable int id) {
         orderService.createOrder(productInCart, id);
-        return "goods/createOrder";
+        return "redirect:/order/" + id + "/";
     }
+
+
 }

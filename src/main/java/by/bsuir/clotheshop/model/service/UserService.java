@@ -76,7 +76,7 @@ public class UserService implements CrudService<User, UserStatus>, UserDetailsSe
         user.setAvatarUrl(noChangeUser.getAvatarUrl());
         user.setRoles(noChangeUser.getRoles());
         user.setLocked(noChangeUser.isLocked());
-        user.setCard(noChangeUser.getCard());
+        if(noChangeUser.getCard() != null) user.setCard(noChangeUser.getCard());
         repository.save(user);
         return Arrays.asList(UserStatus.NO_ERROR, user);
     }

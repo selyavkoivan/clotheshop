@@ -44,7 +44,7 @@ public class Order {
     protected boolean delivery;
 
     @Column
-    protected boolean status;
+    protected int status;
 
     @Column
     @DateTimeFormat(pattern = "yyyy-MM-dd")

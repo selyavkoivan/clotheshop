@@ -1,6 +1,7 @@
 package by.bsuir.clotheshop.model.service;
 
 import by.bsuir.clotheshop.model.entities.address.Address;
+import by.bsuir.clotheshop.model.entities.dto.OrderFilter;
 import by.bsuir.clotheshop.model.entities.dto.ProductDto;
 import by.bsuir.clotheshop.model.entities.goods.Order;
 import by.bsuir.clotheshop.model.entities.user.Card;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class OrderService {
@@ -39,7 +41,7 @@ public class OrderService {
 
     public List<Order> findCartByUsername(String username) {
         return ((List<Order>) orderRepository.findAll())
-                .stream().filter(pr -> pr.getUser().getUsername().equals(username) && !pr.isStatus()).toList();
+                .stream().filter(pr -> pr.getUser().getUsername().equals(username) && pr.getStatus() == 0).toList();
     }
 
     public Order findProductById(int id) {
@@ -60,7 +62,7 @@ public class OrderService {
 
         var order = orderRepository.findById(id).get();
         order.setDelivery(productInCart.isDelivery());
-        order.setStatus(true);
+        order.setStatus(1);
         order.setDate(new Date());
 
         order.setUser(updateUser(order.getUser().getUsername(),
@@ -69,6 +71,8 @@ public class OrderService {
 
         if(productInCart.isRememberAddress()) order.setAddress(order.getUser().getAddress());
         else order.setAddress(createAddress(productInCart.getAddress()));
+
+        order.getSize().setCount(order.getSize().getCount() - order.getCount());
 
         orderRepository.save(order);
     }
@@ -91,5 +95,62 @@ public class OrderService {
             user.getCard().setCardId(id);
         }
         return userRepository.save(user);
+    }
+
+    public List<Order> findAllOrders() {
+        return ((List<Order>) orderRepository.findAll())
+                .stream().filter(pr -> pr.getStatus() != 0).toList();
+    }
+
+    public List<Order> findAllOrders(String username) {
+        return ((List<Order>) orderRepository.findAll())
+                .stream().filter(pr -> pr.getUser().getUsername().equals(username) && pr.getStatus() != 0).toList();
+    }
+
+    public List<Order> read(OrderFilter filter, User user) {
+
+        var orders = user == null ? findAllOrders() : findAllOrders(user.getUsername());
+        if (!filter.getTextForSearch().equals("") && !filter.isForAllUsers()) orders = orders.stream()
+                .filter(g -> g.getProduct().getName().toLowerCase(Locale.ROOT).contains(filter.getTextForSearch().toLowerCase(Locale.ROOT)) ||
+                        g.getProduct().getDescription().toLowerCase(Locale.ROOT).contains(filter.getTextForSearch().toLowerCase(Locale.ROOT))).toList();
+        else if (!filter.getTextForSearch().equals("")) orders = orders.stream()
+                .filter(g -> g.getProduct().getName().toLowerCase(Locale.ROOT).contains(filter.getTextForSearch().toLowerCase(Locale.ROOT)) ||
+                        g.getProduct().getDescription().toLowerCase(Locale.ROOT).contains(filter.getTextForSearch().toLowerCase(Locale.ROOT)) ||
+                        g.getUser().getUsername().toLowerCase(Locale.ROOT).contains(filter.getTextForSearch().toLowerCase(Locale.ROOT)) ||
+                        g.getUser().getEmail().toLowerCase(Locale.ROOT).contains(filter.getTextForSearch().toLowerCase(Locale.ROOT))).toList();
+        if (filter.getDelivery() != 1) orders = orders.stream().filter(g -> (filter.getDelivery() == 2) == g.isDelivery()).toList();
+        if(filter.getStatus() != 0) orders = orders.stream().filter(o -> o.getStatus() == filter.getStatus()).toList();
+        if (filter.getMinPrice() != 0)
+            orders = orders.stream().filter(g -> g.getTotalPrice() >= filter.getMinPrice()).toList();
+        if (filter.getMaxPrice() != 0)
+            orders = orders.stream().filter(g -> g.getTotalPrice() <= filter.getMaxPrice()).toList();
+        if (!filter.getType().equals(""))
+            orders = orders.stream().filter(g -> g.getProduct().getType().toLowerCase(Locale.ROOT).contains(filter.getType().toLowerCase(Locale.ROOT))).toList();
+        if (!filter.getColor().equals(""))
+            orders = orders.stream().filter(g -> g.getProduct().getMaterial().getColor().toLowerCase(Locale.ROOT).contains(filter.getColor().toLowerCase(Locale.ROOT))).toList();
+        if (!filter.getMaterial().equals(""))
+            orders = orders.stream().filter(g -> g.getProduct().getMaterial().getMaterial().toLowerCase(Locale.ROOT).contains(filter.getMaterial().toLowerCase(Locale.ROOT))).toList();
+        if (!filter.getSize().equals(""))
+            orders = orders.stream().filter(g -> g.getProduct().getSizes().stream().
+                    anyMatch(s -> s.getSize().toLowerCase(Locale.ROOT).contains(filter.getSize().toLowerCase(Locale.ROOT)) && s.getCount() != 0)).toList();
+        if (filter.isHasPhoto()) orders = orders.stream().filter(g -> g.getProduct().getPhotoUrls().size() != 0).toList();
+
+        return orders;
+    }
+
+    public Order findById(int id) {
+        return orderRepository.findById(id).get();
+    }
+
+    public Order updateOrder(Order order, int id) {
+        var oldOrder = orderRepository.findById(id).get();
+        oldOrder.setStatus(order.getStatus());
+        return orderRepository.save(oldOrder);
+    }
+
+    public void finishOrder(int id) {
+        var order = orderRepository.findById(id).get();
+        order.setStatus(4);
+        orderRepository.save(order);
     }
 }
