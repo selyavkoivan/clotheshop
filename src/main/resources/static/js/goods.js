@@ -192,4 +192,15 @@ $(document).ready(() => {
         })
         return false
     })
+
+    $('#setMark, #removeMark').click(function () {
+        let url = 'changeMark'
+        fetch(url, {
+            method: 'POST'
+        }).then(() => {
+            location.reload()
+        }).catch(() => {
+            location.reload()
+        })
+    })
 })

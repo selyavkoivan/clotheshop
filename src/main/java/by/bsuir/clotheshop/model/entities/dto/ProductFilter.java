@@ -18,7 +18,7 @@ public class ProductFilter {
     private String color;
     private String size;
     private boolean hasPhoto;
-
+    private boolean mark;
     private String textForSearch;
 
 }

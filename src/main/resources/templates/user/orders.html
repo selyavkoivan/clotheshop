@@ -53,7 +53,7 @@
             <div class="input-group mb-3">
                 <div class="input-group-prepend">
                                 <span class="input-group-text" id="gender-addon"><p class="m-0"><i
-                                        class="fa-solid fa-stairs"></i>></p></span>
+                                        class="fa-solid fa-stairs"></i></p></span>
                 </div>
 
                 <select th:field="*{status}" class="form-control"
@@ -111,13 +111,13 @@
                     ((order.status == 3 || order.status == 2) ? 'border border-warning rounded p-2' : 'border border-danger rounded p-2')}">
                         <a class="p-0 link-dark text-decoration-none"
                            th:href="@{'/order/' + ${order.productInCartId} + '/'}">
-                            <img th:if="${order.product.photoUrls.size() == 0 && order.product.mainPhoto == null}"
+                            <img height="200" th:if="${order.product.photoUrls.size() == 0 && order.product.mainPhoto == null}"
                                  class="col-12 rounded"
                                  src="https://www.lionstroy.ru/published/publicdata/U70619SHOP/attachments/SC/products_pictures/nophoto.png">
-                            <img th:if="${order.product.photoUrls.size() != 0 && order.product.mainPhoto == null}"
+                            <img height="200" th:if="${order.product.photoUrls.size() != 0 && order.product.mainPhoto == null}"
                                  class="col-12 rounded"
                                  th:src="${order.product.photoUrls[0]}">
-                            <img th:if="${order.product.mainPhoto != null}" class="col-12 rounded"
+                            <img height="200" th:if="${order.product.mainPhoto != null}" class="col-12 rounded"
                                  th:src="${order.product.mainPhoto}">
                             <p class="text-wrap m-0" th:text="${order.product.name}"></p>
                             <!-- rate -->

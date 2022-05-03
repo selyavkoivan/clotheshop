@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{blocks/header}"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">>
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Товар</title>
@@ -51,7 +51,7 @@
                         <div th:if="${order.status != 4}" sec:authorize="hasAuthority('Admin')" class="input-group mb-3">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" id="gender-addon"><p class="m-0"><i
-                                        class="fa-solid fa-stairs"></i>></p></span>
+                                        class="fa-solid fa-stairs"></i></p></span>
                             </div>
 
                             <select th:field="*{status}" class="form-control"

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{blocks/header}">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{blocks/header}"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Товары</title>
@@ -53,6 +54,11 @@
                     <input th:field="*{hasPhoto}" type="checkbox"> С фото
                 </label>
             </div>
+            <div sec:authorize="isAuthenticated()" class="mb-3 d-flex">
+                <label style="word-wrap:break-word">
+                    <input th:field="*{mark}" type="checkbox"> В закладках
+                </label>
+            </div>
             <input type="submit" class="btn btn-outline-success col-12" value="Фильтр">
         </div>
         <div class="col-lg-8 col-md-12">
@@ -74,13 +80,13 @@
             <div class="row">
                 <div class="col-lg-4 col-md-6 col-sm-12 m-0 p-3 product" th:each="product : ${goods}">
                     <a class="p-0 link-dark text-decoration-none" th:href="@{'/goods/' + ${product.productId} + '/'}">
-                        <img th:if="${product.photoUrls.size() == 0 && product.mainPhoto == null}"
+                        <img height="240" th:if="${product.photoUrls.size() == 0 && product.mainPhoto == null}"
                              class="col-12 rounded"
                              src="https://www.lionstroy.ru/published/publicdata/U70619SHOP/attachments/SC/products_pictures/nophoto.png">
-                        <img th:if="${product.photoUrls.size() != 0 && product.mainPhoto == null}"
+                        <img height="240" th:if="${product.photoUrls.size() != 0 && product.mainPhoto == null}"
                              class="col-12 rounded"
                              th:src="${product.photoUrls[0]}">
-                        <img th:if="${product.mainPhoto != null}" class="col-12 rounded"
+                        <img height="240" th:if="${product.mainPhoto != null}" class="col-12 rounded"
                              th:src="${product.mainPhoto}">
                         <p class="text-wrap m-0" th:text="${product.name}"></p>
                         <!-- rate -->

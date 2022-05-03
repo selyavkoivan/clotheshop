@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{blocks/header}">
+<html lang="en" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{blocks/header}"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <meta charset="UTF-8">
     <title>Товар</title>
@@ -26,8 +27,7 @@
                          height="300" class="form-control img img-responsive"
                          src="https://www.lionstroy.ru/published/publicdata/U70619SHOP/attachments/SC/products_pictures/nophoto.png">
                     <img height="300" th:if="${product.photoUrls.size() != 0 && product.mainPhoto == null}"
-                         class="form-control img img-responsive"
-                         th:src="${product.photoUrls[0]}">
+                         class="form-control img img-responsive" th:src="${product.photoUrls[0]}">
                     <img height="300" th:if="${product.mainPhoto != null}" class="form-control img img-responsive"
                          th:src="${product.mainPhoto}">
                     <div th:if="${#strings.listJoin(#authentication.getAuthorities(),',').contains('Admin')}"
@@ -38,11 +38,23 @@
                 </div>
                 <div class="col-8 m-0 ps-3">
                     <div class="form-control p-2">
-                        <div class="ms-5">
-                            <h1 th:text="${product.name}"></h1>
-                        </div>
-                        <div class="ms-5">
-                            <h2><small class="text-muted" th:text="${product.type}"></small></h2>
+                        <div class="row">
+                            <div class="col-11">
+                                <div class="ms-5">
+                                    <h1 th:text="${product.name}"></h1>
+                                </div>
+                                <div class="ms-5">
+                                    <h2><small class="text-muted" th:text="${product.type}"></small></h2>
+                                </div>
+                            </div>
+                            <div sec:authorize="isAuthenticated()" class="col-1 m-0 p-0">
+                                <h1 id="removeMark" th:if="${mark != null}"><small>
+                                    <i class="fa-solid fa-bookmark"></i>
+                                </small></h1>
+                                <h1 id="setMark" th:unless="${mark != null}"><small class="text-muted">
+                                    <i class="fa-regular fa-bookmark"></i>
+                                </small></h1>
+                            </div>
                         </div>
                         <hr/>
                         <div class="ms-5">

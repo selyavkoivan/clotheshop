@@ -23,6 +23,7 @@
                             <li sec:authorize="hasAuthority('Admin')"><a class="dropdown-item" href="/users">Пользователи</a></li>
                             <li sec:authorize="hasAuthority('User')"><a class="dropdown-item" href="/order/my-order/">Мои заказы</a></li>
                             <li sec:authorize="hasAuthority('Admin')"><a class="dropdown-item" href="/order/">Заказы</a></li>
+                            <li sec:authorize="hasAuthority('Admin')"><a class="dropdown-item" href="/goods/add">Добавить товар</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li><a th:href="@{/logout}" class="dropdown-item">Выйти</a></li>
                         </ul>

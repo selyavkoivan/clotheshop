@@ -1,8 +1,10 @@
 package by.bsuir.clotheshop.model.service;
 
 import by.bsuir.clotheshop.model.entities.dto.ProductFilter;
+import by.bsuir.clotheshop.model.entities.goods.Bookmark;
 import by.bsuir.clotheshop.model.entities.goods.Product;
 import by.bsuir.clotheshop.model.entities.user.User;
+import by.bsuir.clotheshop.model.repository.BookmarkRepository;
 import by.bsuir.clotheshop.model.repository.MaterialRepository;
 import by.bsuir.clotheshop.model.repository.ProductRepository;
 import by.bsuir.clotheshop.model.repository.UserRepository;
@@ -19,6 +21,9 @@ import java.util.Locale;
 public class ProductService implements CrudService<Product, Product> {
     @Autowired
     ProductRepository repository;
+
+    @Autowired
+    BookmarkRepository bookmarkRepository;
 
     @Override
     public Product create(Product product) {
@@ -38,9 +43,14 @@ public class ProductService implements CrudService<Product, Product> {
         return repository.findAll();
     }
 
-    public List<Product> read(ProductFilter filter) {
+    public List<Product> readMarkedGoods(User user) {
+        return ((List<Bookmark>)bookmarkRepository.findAll()).stream()
+                .filter(bm -> bm.getUser().getUsername().equals(user.getUsername())).map(Bookmark::getProduct).toList();
+    }
 
-        var goods = ((List<Product>) repository.findAll());
+    public List<Product> read(ProductFilter filter, User user) {
+
+        var goods = (user != null && filter.isMark()) ? readMarkedGoods(user) : ((List<Product>) repository.findAll());
         if (!filter.getTextForSearch().equals("")) goods = goods.stream()
                 .filter(g -> g.getName().toLowerCase(Locale.ROOT).contains(filter.getTextForSearch().toLowerCase(Locale.ROOT)) ||
                         g.getDescription().toLowerCase(Locale.ROOT).contains(filter.getTextForSearch().toLowerCase(Locale.ROOT))).toList();

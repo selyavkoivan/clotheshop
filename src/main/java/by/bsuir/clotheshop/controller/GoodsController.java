@@ -5,6 +5,7 @@ import by.bsuir.clotheshop.model.entities.dto.ProductFilter;
 import by.bsuir.clotheshop.model.entities.goods.Product;
 import by.bsuir.clotheshop.model.entities.goods.Order;
 import by.bsuir.clotheshop.model.entities.user.User;
+import by.bsuir.clotheshop.model.service.BookmarkService;
 import by.bsuir.clotheshop.model.service.OrderService;
 import by.bsuir.clotheshop.model.service.ProductService;
 
@@ -31,6 +32,9 @@ public class GoodsController {
     ProductService service;
 
     @Autowired
+    BookmarkService bookmarkService;
+
+    @Autowired
     OrderService orderService;
 
     @GetMapping("/goods/add")
@@ -55,9 +59,10 @@ public class GoodsController {
     }
 
     @GetMapping("/goods/{id}/")
-    public String showProduct(Model model, @PathVariable int id) {
+    public String showProduct(Model model, @PathVariable int id, @AuthenticationPrincipal User user) {
         model.addAttribute("product", service.getById(id));
         model.addAttribute("productDto", new ProductDto());
+        model.addAttribute("mark", user != null ? bookmarkService.find(user.getUsername(), id) : null);
         return "goods/product";
     }
 
@@ -93,8 +98,8 @@ public class GoodsController {
     }
 
     @PostMapping("/goods/search")
-    public String searchGoods(Model model, @ModelAttribute("productFilter") ProductFilter filter) {
-        model.addAttribute("goods", service.read(filter));
+    public String searchGoods(Model model, @ModelAttribute("productFilter") ProductFilter filter, @AuthenticationPrincipal User user) {
+        model.addAttribute("goods", service.read(filter, user));
         model.addAttribute("productFilter", filter);
         return "goods/goods";
     }
@@ -151,5 +156,9 @@ public class GoodsController {
         return "redirect:/order/" + id + "/";
     }
 
-
+    @PostMapping("/goods/{id}/changeMark")
+    public String changeMark(@AuthenticationPrincipal User user, @PathVariable int id) {
+        bookmarkService.changeMark(user.getUsername(), id);
+        return "";
+    }
 }
